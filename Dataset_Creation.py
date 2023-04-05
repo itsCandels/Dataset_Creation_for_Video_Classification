@@ -42,7 +42,7 @@ m=[]
 s=[]
 ms=[]
 lista_csv=[]
-
+lista_array.insert(0,0)
 
 
 #COUNTER
@@ -51,7 +51,7 @@ cc=0
 frames=0
 
 
-lista_array.insert(0,0)
+
 
 
 captured = False
@@ -105,29 +105,26 @@ for i in data_dir_list:
         
 
     while True:
-        # grab a frame from the video
+
 
         (grabbed, frame) = cap.read()
     
-        # if the frame is None, then we have reached the end of the
-        # video file
+
         change_frame +=1
         
         if frame is None:
             break
     	
-        #else: 
-        # clone the original frame (so we can save it later), resize the
-    	# frame, and then apply the background subtractor
+
         orig = frame.copy()
         frame = imutils.resize(frame, width=600)
         mask = fgbg.apply(frame)
         
-        # apply a series of erosions and dilations to eliminate noise
+
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
         
-        # if the width and height are empty, grab the spatial dimensions
+       
         if W is None or H is None:
             (H, W) = mask.shape[:2]
             
@@ -165,7 +162,7 @@ for i in data_dir_list:
         
         
         
-        # compute the percentage of the mask that is "foreground"
+        #Compute the percentage of the mask that is "foreground"
         p = (cv2.countNonZero(mask) / float(W * H)) * 100
     
 
@@ -182,13 +179,14 @@ for i in data_dir_list:
             endtime=start+durata
 
             count+=1
-                        #INSERT_OUTPUT_PATH_HERE
-            outputfile='OUTPUT_FILE_MINIVIDEO/VIDEO_N_'+str(cc)+'_SCENA_'+str(count)+'.mp4'                        
+                        
+            outputfile='OUTPUT_FILE_MINIVIDEO/VIDEO_N_'+str(cc)+'_SCENA_'+str(count)+'.mp4'
+            
             required_video_file=VideoFileClip('INPUT_VIDEO/'+str(cc)+'video.'+'mp4')            
            
             full_duration=required_video_file.duration
             
-            #ZERO_SHOT_LEARNING
+            
             
             
             
@@ -226,9 +224,7 @@ for i in data_dir_list:
 
     	
             lista_csv.append(timestamp)
-        # otherwise, either the scene is changing or we're still in warmup
-    	# mode so let's wait until the scene has settled or we're finished
-    	# building the background model
+
         elif captured and p >=15:
               
             captured = False
@@ -236,25 +232,26 @@ for i in data_dir_list:
 
         key = cv2.waitKey(1) & 0xFF
     	
-        # if the `x` key was pressed, break from the loop
+        #if the `x` key was pressed, break from the loop
         if key == ord("x"):
             break
     	
-        # increment the frames counter
+
         frames += 1
-        # do a bit of cleanup
+
     
 
     
     
     
     cap.release()
+    #DECOMMENT IF YOU WANT REPORT 
    
     # lista = pd.DataFrame(lista_csv)
     # lista.to_csv(r'OUTPUT_PAZIENTI_NORMALI/Totalvideo.csv', header=False, index=False)    
     
     
-    #FINE DEI TEMPI DI ELABORAZIONE
+    #END ELABORATION TIME
     elapsed=time.time()-start
     output=dt.strftime(dt.utcfromtimestamp(elapsed), '%H:%M:%S')
     print("TEMPOELABORAZIONE:",output)
